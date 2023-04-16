@@ -1,81 +1,94 @@
 import React, { useState } from "react";
-import { Dialog, DialogType, TextField, Stack, Slider } from "@fluentui/react";
+import {
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogSurface,
+  DialogTitle,
+  Input,
+  Slider,
+} from "@fluentui/react-components";
+import { Field } from "@fluentui/react-components/unstable";
 
 import { FormattedMessage, useIntl } from "react-intl";
 import { LanguageSelector } from "../LanguageSelector";
 
+const fieldsetStyle: React.CSSProperties = { marginTop: 24 };
+
 const App: React.FunctionComponent = () => {
-  const intl = useIntl();
+  const { formatMessage } = useIntl();
   const [count, setCount] = useState(1);
   const [friendsName, setFriendsName] = useState("John");
 
-  const dialogContentProps = {
-    type: DialogType.largeHeader,
-    title: intl.formatMessage({
-      defaultMessage: "Localization demo",
-      description: "title",
-    }),
-  };
-
   return (
-    <Dialog
-      maxWidth={750}
-      hidden={false}
-      dialogContentProps={dialogContentProps}
-      modalProps={{ isBlocking: true }}
-    >
-      <LanguageSelector forceReload={false} />
-
-      <form>
-        <fieldset style={{ marginTop: 24 }}>
-          <legend>
+    <Dialog open={true}>
+      <DialogSurface>
+        <DialogBody>
+          <DialogTitle>
             <FormattedMessage
-              defaultMessage="Use the form below to see the samples"
-              description="Form header"
+              defaultMessage="Localization demo"
+              description="title"
             />
-          </legend>
+          </DialogTitle>
+          <DialogContent>
+            <LanguageSelector forceReload={false} />
 
-          <Stack tokens={{ childrenGap: 16 }}>
-            <TextField
-              label={intl.formatMessage({
-                defaultMessage: "Friend's name",
-                description: "name field",
-              })}
-              value={friendsName}
-              onChange={(event, value) => {
-                if (value) {
-                  setFriendsName(value);
-                }
-              }}
-            />
+            <form>
+              <fieldset style={fieldsetStyle}>
+                <legend>
+                  <FormattedMessage
+                    defaultMessage="Use the form below to see the samples"
+                    description="Form header"
+                  />
+                </legend>
 
-            <Slider
-              label={intl.formatMessage({
-                defaultMessage: "Item count",
-                description: "count field",
-              })}
-              max={10}
-              value={count}
-              showValue
-              onChange={(value) => {
-                setCount(value);
-              }}
-            />
-          </Stack>
-        </fieldset>
+                <Field
+                  label={formatMessage({
+                    defaultMessage: "Friend's name",
+                    description: "name field",
+                  })}
+                >
+                  <Input
+                    value={friendsName}
+                    onChange={(event, { value }) => {
+                      setFriendsName(value);
+                    }}
+                  />
+                </Field>
 
-        <fieldset style={{ marginTop: 24 }}>
-          <FormattedMessage
-            defaultMessage="{name} has shared {count, plural, =0 {no photos} one {a photo} other {# photos}} with you on {date, date, ::MMMM d yyyy}."
-            values={{
-              name: <b>{friendsName}</b>,
-              count,
-              date: new Date(),
-            }}
-            description="Description of items being shared with user"
-          />
-        </fieldset>
-      </form>
+                <Field
+                  style={{ marginTop: 12 }}
+                  label={formatMessage({
+                    defaultMessage: "Item count",
+                    description: "count field",
+                  })}
+                >
+                  <Slider
+                    max={10}
+                    value={count}
+                    onChange={(event, { value }) => {
+                      setCount(value);
+                    }}
+                    step={1}
+                  />
+                </Field>
+              </fieldset>
+
+              <fieldset style={fieldsetStyle}>
+                <FormattedMessage
+                  defaultMessage="{name} has shared {count, plural, =0 {no photos} one {a photo} other {# photos}} with you on {date, date, ::MMMM d yyyy}."
+                  values={{
+                    name: <b>{friendsName}</b>,
+                    count,
+                    date: new Date(),
+                  }}
+                  description="Description of items being shared with user"
+                />
+              </fieldset>
+            </form>
+          </DialogContent>
+        </DialogBody>
+      </DialogSurface>
     </Dialog>
   );
 };

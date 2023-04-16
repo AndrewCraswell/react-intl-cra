@@ -13,7 +13,7 @@
     "localize:compile": "formatjs compile src/i18n/source/strings.json --out-file src/i18n/translated/en-US.json"
   },
   "dependencies": {
-    "@fluentui/react": "^8.107.5",
+    "@fluentui/react-components": "^9.18.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-intl": "^6.3.2"
