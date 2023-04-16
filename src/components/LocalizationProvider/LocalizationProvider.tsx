@@ -1,89 +1,42 @@
-import React, {
-  createContext,
-  useState,
-  useMemo,
-  useContext,
-  useCallback,
-  useEffect,
-} from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import type { PropsWithChildren } from "react";
 import { IntlProvider } from "react-intl";
-import { OptionalIntlConfig } from "react-intl/src/components/provider";
+import type { IntlConfig } from "react-intl";
+
+import type { ILocaleContext, LocalizationProviderConfig } from "./LocalizationProvider.types";
 
 const LOCALE_CACHE_KEY = "locale";
 const DEFAULT_LOCALE = {
   locale: "en-US",
   englishName: "English (US)",
   displayName: "English (US)",
-  rtl: false,
+  rtl: false
 };
-
-export interface ILocale {
-  locale: string;
-  englishName: string;
-  displayName: string;
-  rtl: boolean;
-}
-
-interface ILocaleContext {
-  locale: string;
-  locales: ILocale[];
-  defaultLocale: string;
-  setLocale: (locale: string, forceReload?: boolean) => void;
-  setDefaultLocale: (locale: string) => void;
-}
 
 const defaultLocaleContext: ILocaleContext = {
   locale: DEFAULT_LOCALE.locale,
   defaultLocale: DEFAULT_LOCALE.locale,
   locales: [DEFAULT_LOCALE],
   setLocale: (locale: string, forceReload?: boolean) => {},
-  setDefaultLocale: (locale: string) => {},
+  setDefaultLocale: (locale: string) => {}
 };
 
-export const LocaleContext = createContext<ILocaleContext>(
-  defaultLocaleContext
-);
+export const LocaleContext = createContext<ILocaleContext>(defaultLocaleContext);
 
-export type LocalizedMessages = OptionalIntlConfig["messages"];
+export type LocalizationProviderProps = PropsWithChildren<LocalizationProviderConfig>;
 
-type LocalizationProviderConfig = OptionalIntlConfig & {
-  locales: ILocale[];
-  storage?: Storage;
-  localeLoader?: (locale: string) => Promise<LocalizedMessages>;
-};
-
-export const LocalizationProvider: React.FunctionComponent<LocalizationProviderConfig> = (
-  props
-) => {
+export const LocalizationProvider: React.FunctionComponent<LocalizationProviderProps> = (props) => {
   const { children, locales, storage, localeLoader, ...providerProps } = props;
 
-  useEffect(() => {
-    if (storage) {
-      const cachedLocale = storage.getItem(LOCALE_CACHE_KEY);
-      if (cachedLocale) {
-        setLocale(cachedLocale);
-      } else {
-        storage.setItem(LOCALE_CACHE_KEY, locale);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const [locale, _setLocale] = useState(
-    providerProps.locale || defaultLocaleContext.locale
-  );
-  const [defaultLocale, setDefaultLocale] = useState(
-    providerProps.locale || defaultLocaleContext.locale
-  );
-  const [messages, setMessages] = useState<LocalizedMessages>(
-    providerProps.messages
-  );
+  const [locale, _setLocale] = useState(providerProps.locale || defaultLocaleContext.locale);
+  const [defaultLocale, setDefaultLocale] = useState(providerProps.defaultLocale || defaultLocaleContext.locale);
+  const [messages, setMessages] = useState<IntlConfig["messages"]>(providerProps.messages);
 
   const setLocale = useCallback(
     async (locale: string, forceReload?: boolean) => {
       const loc =
-        locales.find((l) => l.locale === locale) ||
-        locales.find((l) => l.locale === defaultLocale);
+        locales.find((l) => l.locale.toLowerCase() === locale.toLowerCase()) ||
+        locales.find((l) => l.locale.toLowerCase() === defaultLocale.toLowerCase());
 
       if (loc) {
         if (storage) {
@@ -100,9 +53,7 @@ export const LocalizationProvider: React.FunctionComponent<LocalizationProviderC
           document.documentElement.lang = loc.locale;
           document.documentElement.dir = loc.rtl ? "rtl" : "ltr";
         } else {
-          throw new Error(
-            "Attempted to load a locale without registering a localeLoader handler"
-          );
+          throw new Error("Attempted to load a locale without registering a localeLoader handler");
         }
       } else {
         throw new Error(`Attempted to set an unregistered locale "${locale}"`);
@@ -117,19 +68,29 @@ export const LocalizationProvider: React.FunctionComponent<LocalizationProviderC
       locales,
       defaultLocale,
       setLocale,
-      setDefaultLocale,
+      setDefaultLocale
     }),
     [defaultLocale, locale, locales, setLocale]
   );
 
+  useEffect(() => {
+    if (storage) {
+      const cachedLocale = storage.getItem(LOCALE_CACHE_KEY);
+      if (cachedLocale) {
+        setLocale(cachedLocale);
+      } else {
+        storage.setItem(LOCALE_CACHE_KEY, locale);
+        setLocale(locale);
+      }
+    } else {
+      setLocale(locale);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <LocaleContext.Provider value={localeMemo}>
-      <IntlProvider
-        {...providerProps}
-        locale={locale}
-        defaultLocale={defaultLocale}
-        messages={messages}
-      >
+      <IntlProvider {...providerProps} locale={locale} defaultLocale={defaultLocale} messages={messages}>
         {children}
       </IntlProvider>
     </LocaleContext.Provider>

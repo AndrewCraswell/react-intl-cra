@@ -1,25 +1,26 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { initializeIcons } from "@fluentui/react";
 
 import "./index.css";
 import App from "./components/App/App";
-import { locales, loadLocaleData } from "./locales";
-import { LocalizationProvider } from "./components/LocalizationProvider/LocalizationProvider";
+import { locales, loadLocaleStrings } from "./locales";
+import { LocalizationProvider } from "./components/LocalizationProvider";
 
 initializeIcons();
 
-ReactDOM.render(
+const rootNode = document.getElementById("root");
+const root = createRoot(rootNode!);
+root.render(
   <React.StrictMode>
     <LocalizationProvider
       locale="en-US"
       defaultLocale="en-US"
       locales={locales}
       storage={localStorage}
-      localeLoader={loadLocaleData}
+      localeLoader={loadLocaleStrings}
     >
       <App />
     </LocalizationProvider>
-  </React.StrictMode>,
-  document.getElementById("root")
+  </React.StrictMode>
 );

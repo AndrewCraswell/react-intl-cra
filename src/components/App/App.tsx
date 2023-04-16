@@ -3,7 +3,7 @@ import { Dialog, DialogType, TextField, Stack, Slider } from "@fluentui/react";
 
 import "./App.css";
 import { FormattedMessage, useIntl } from "react-intl";
-import { LanguageSelector } from "../LanguageSelector/LanguageSelector";
+import { LanguageSelector } from "../LanguageSelector";
 
 const App: React.FunctionComponent = () => {
   const intl = useIntl();
@@ -14,33 +14,25 @@ const App: React.FunctionComponent = () => {
     type: DialogType.largeHeader,
     title: intl.formatMessage({
       defaultMessage: "Localization demo",
-      description: "title",
-    }),
+      description: "title"
+    })
   };
 
   return (
-    <Dialog
-      maxWidth={750}
-      hidden={false}
-      dialogContentProps={dialogContentProps}
-      modalProps={{ isBlocking: true }}
-    >
+    <Dialog maxWidth={750} hidden={false} dialogContentProps={dialogContentProps} modalProps={{ isBlocking: true }}>
       <LanguageSelector forceReload={false} />
 
       <form>
         <fieldset style={{ marginTop: 24 }}>
           <legend>
-            <FormattedMessage
-              defaultMessage="Use the form below to see the samples"
-              description="Form header"
-            />
+            <FormattedMessage defaultMessage="Use the form below to see the samples" description="Form header" />
           </legend>
 
           <Stack tokens={{ childrenGap: 16 }}>
             <TextField
               label={intl.formatMessage({
                 defaultMessage: "Friend's name",
-                description: "name field",
+                description: "name field"
               })}
               value={friendsName}
               onChange={(event, value) => {
@@ -53,7 +45,7 @@ const App: React.FunctionComponent = () => {
             <Slider
               label={intl.formatMessage({
                 defaultMessage: "Item count",
-                description: "count field",
+                description: "count field"
               })}
               max={10}
               value={count}
@@ -71,7 +63,7 @@ const App: React.FunctionComponent = () => {
             values={{
               name: <b>{friendsName}</b>,
               count,
-              date: new Date(),
+              date: new Date()
             }}
             description="Description of items being shared with user"
           />

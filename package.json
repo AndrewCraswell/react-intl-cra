@@ -13,23 +13,23 @@
     "localize:compile": "formatjs compile src/i18n/source/strings.json --out-file src/i18n/translated/en-US.json"
   },
   "dependencies": {
-    "@fluentui/react": "^7.134.2",
-    "babel-plugin-react-intl": "^8.2.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-intl": "^5.8.0"
+    "@fluentui/react": "^8.107.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-intl": "^6.3.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.11.6",
-    "@babel/core": "^7.11.6",
-    "@craco/craco": "^5.6.4",
-    "@formatjs/cli": "^2.9.0",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.0",
-    "@types/react-dom": "^16.9.0",
-    "eslint-plugin-formatjs": "^2.7.8",
-    "react-scripts": "3.4.3",
-    "typescript": "4.0.2"
+    "@babel/cli": "^7.21.0",
+    "@babel/core": "^7.21.4",
+    "@craco/craco": "^7.1.0",
+    "@formatjs/cli": "^6.0.4",
+    "@types/node": "^18.15.11",
+    "@types/react": "^18.0.35",
+    "@types/react-dom": "^18.0.11",
+    "babel-plugin-react-intl": "^8.2.25",
+    "eslint-plugin-formatjs": "^4.9.1",
+    "react-scripts": "^5.0.1",
+    "typescript": "^4.9.5"
   },
   "eslintConfig": {
     "extends": "react-app",
